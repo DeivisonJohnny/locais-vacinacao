@@ -12,7 +12,7 @@ const Maps = () => {
 
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: "mapbox://styles/mapbox/satellite-v9", // Estilo de satélite para simular espaço
+        style: "mapbox://styles/mapbox/standard-satellite", // Estilo de satélite para simular espaço
         center: [-74.5, 40], // Coordenadas de centro
         zoom: 2, // Nível de zoom inicial (baixo para ver o globo)
         pitch: 0, // Desabilita a inclinação inicial
