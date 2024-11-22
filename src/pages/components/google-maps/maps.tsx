@@ -110,7 +110,7 @@ const Maps = () => {
       <div
         id="map-container"
         ref={mapContainerRef}
-        style={{ width: "60%", height: "100vh" }}
+        style={{ width: "100%", height: "100vh" }}
       />
   );
 };
