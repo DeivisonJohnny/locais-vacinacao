@@ -29,28 +29,28 @@ export default function Home() {
           <div className="flex items-start flex-row gap-[25px] ">
             <Link
               href={"https://instagram.com/deivisonjohnny"}
-              className=" hover:text-[#c4daff] "
+              className=" hover:text-[#c4daff] w-[45px] h-[45px] flex items-center justify-center "
             >
               <Instagram
-                size={27}
+                size={30}
                 className=" transition-all duration-300 opacity-[50%] hover:opacity-[100%] hover:translate-y-[-13px] filter dropShadow dropShadowHover "
               />
             </Link>
             <Link
               href={"https://instagram.com/deivisonjohnny"}
-              className=" hover:text-[#c4daff] "
+              className=" hover:text-[#c4daff] w-[45px] h-[45px] flex items-center justify-center "
             >
               <Linkedin
-                size={27}
+                size={30}
                 className=" transition-all duration-300 opacity-[50%] hover:opacity-[100%] hover:translate-y-[-13px] filter dropShadow dropShadowHover "
               />
             </Link>
             <Link
               href={"https://instagram.com/deivisonjohnny"}
-              className=" hover:text-[#c4daff] "
+              className=" hover:text-[#c4daff] w-[45px] h-[45px] flex items-center justify-center "
             >
               <Github
-                size={27}
+                size={30}
                 className=" transition-all duration-300 opacity-[50%] hover:opacity-[100%] hover:translate-y-[-13px] filter dropShadow dropShadowHover "
               />
             </Link>
