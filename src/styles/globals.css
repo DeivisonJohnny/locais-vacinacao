@@ -54,6 +54,10 @@ body {
   width: 100% !important;
 }
 
+.mapboxgl-ctrl-bottom-right {
+  display: none !important;
+}
+
 .sidebar {
   background-color: rgb(35 55 75 / 90%);
   color: #fff;

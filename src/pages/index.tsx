@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Maps from "./components/google-maps/maps";
+import Maps from "./components/maps/maps";
 import { FormLogin } from "./components/login/form";
 
 import localFont from "next/font/local";

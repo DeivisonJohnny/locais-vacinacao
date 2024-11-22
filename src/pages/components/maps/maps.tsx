@@ -15,8 +15,8 @@ const Maps = () => {
       mapRef.current = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/satellite-streets-v12",
-        center: [-35.504750965095866, -9.419579257561125],
-        zoom: 2,
+        center: [-51.09126809388414, -10.30552906770339],
+        zoom: 1.5,
         pitch: 0,
         bearing: 0,
         projection: "globe",
@@ -107,11 +107,11 @@ const Maps = () => {
   }, []);
 
   return (
-      <div
-        id="map-container"
-        ref={mapContainerRef}
-        style={{ width: "100%", height: "100vh" }}
-      />
+    <div
+      id="map-container"
+      ref={mapContainerRef}
+      style={{ width: "100%", height: "100vh" }}
+    />
   );
 };
 
