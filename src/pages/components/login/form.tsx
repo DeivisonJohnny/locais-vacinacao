@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,12 +12,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+<<<<<<< HEAD
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
 import SessionApi from "@/services/Api/SessionApi"
 import { getToken, setToken } from "@/utils/TokenManager"
 
+=======
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
+>>>>>>> 7b4464a1e1c10268d55a7ef12bae9c6184595155
 
 const FormSchema = z.object({
   username: z.string().min(5, {
@@ -26,7 +32,7 @@ const FormSchema = z.object({
   password: z.string().min(8, {
     message: "Usuario deve ter ao menos 8 caracteres",
   }),
-})
+});
 
 export function FormLogin() {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -35,8 +41,9 @@ export function FormLogin() {
       username: "",
       password: "",
     },
-  })
+  });
 
+<<<<<<< HEAD
   async function onSubmit(data: z.infer<typeof FormSchema>) {
 
     try {
@@ -52,6 +59,10 @@ export function FormLogin() {
       
     }
 
+=======
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log("🚀 ~ onSubmit ~ data:", data)
+>>>>>>> 7b4464a1e1c10268d55a7ef12bae9c6184595155
     toast({
       title: "You submitted the following values:",
       description: (
@@ -59,40 +70,63 @@ export function FormLogin() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className=" lg:w-[80%] xl:w-[60%] max- w-[90%] flex items-center flex-col gap-8 ">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className=" lg:w-[80%] xl:w-[60%] max- w-[90%] flex items-center flex-col gap-8 transition-all duration-300 "
+      >
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
-            <FormItem className="w-full flex flex-col gap-0 " >
-              <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold ">Usuario</FormLabel>
+            <FormItem className="w-full flex flex-col gap-0 ">
+              <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold font-bold">
+                Usuario
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Usuario" {...field} />
+                <Input
+                  placeholder="Usuario"
+                  {...field}
+                  className="border-[#c4daffb4] "
+                  autoComplete="off"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-         <FormField
+        <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="w-full flex flex-col gap-0 " >
-              <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold ">Senha</FormLabel>
+            <FormItem className="w-full flex flex-col gap-0 ">
+              <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold font-bold">
+                Senha
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Senha" {...field} />
+                <Input
+                  placeholder="Senha"
+                  {...field}
+                  className="border-[#c4daffb4] "
+                  type="password"
+                  autoComplete="off"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full bg-[#1f6df5] font-bold tracking-[0.8px]" >Acessar</Button>
+        <Button
+          type="submit"
+          className="w-full bg-[#1f6df5] font-bold tracking-[0.8px]"
+        >
+          Acessar
+        </Button>
       </form>
     </Form>
-  )
+  );
 }
