@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
+import SessionApi from "@/services/Api/SessionApi"
+import { getToken, setToken } from "@/utils/TokenManager"
 
 
 const FormSchema = z.object({
@@ -35,7 +37,21 @@ export function FormLogin() {
     },
   })
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+
+    try {
+      const result = await SessionApi.login(data);
+      console.log("🚀 ~ onSubmit ~ result:", result)
+
+      setToken(result.token);
+
+      console.log(getToken());
+
+    } catch (error) {
+      console.log("🚀 ~ onSubmit ~ error:", error)
+      
+    }
+
     toast({
       title: "You submitted the following values:",
       description: (
