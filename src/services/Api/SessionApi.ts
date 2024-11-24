@@ -6,7 +6,7 @@ export type Login = {
 };
 
 export default class SessionApi {
-  static async login({username, password}: Login) {
+  static async create({username, password}: Login) {
     const {data, status} = await Api.post("auth/login", {username, password});
     console.log("🚀 ~ SessionApi ~ login ~ status:", status)
     return data;
