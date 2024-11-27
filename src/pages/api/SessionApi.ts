@@ -16,16 +16,18 @@ export default class SessionApi {
     try {
       const { data, status } = await Api.post("auth/login", {
         username,
-        password
+        password,
       });
 
       if (!data || !status) {
         throw new ApiError("Dados não coletados para retorno");
       }
 
+      console.log(data);
+
       return { ...data, status };
     } catch (error) {
-      console.log("🚀 ~ SessionApi ~ create ~ error:", error)
+      console.log("🚀 ~ SessionApi ~ create ~ error:", error);
       return error;
     }
   }

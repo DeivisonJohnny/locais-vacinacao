@@ -15,8 +15,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import SessionController from "@/services/api/controller/SessionController";
 import { useState } from "react";
+import SessionApi from "@/pages/api/SessionApi";
+import Links from "./links";
 
 const FormSchema = z.object({
   username: z.string().min(5, {
@@ -27,8 +28,13 @@ const FormSchema = z.object({
   }),
 });
 
-export function FormLogin() {
+interface FormLoginProps {
+  onLoginSuccess: (token: string) => void;
+}
+
+export const FormLogin = ({ onLoginSuccess }: FormLoginProps) => {
   const { toast } = useToast();
+
 
   const [username] = useState("devjohnny");
   const [password] = useState("mecontrate");
@@ -37,14 +43,14 @@ export function FormLogin() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       username: username,
-      password: password
+      password: password,
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any = await SessionController.create(data);
+      const result: any = await SessionApi.create(data);
 
       if (result.status != 200) {
         toast({
@@ -53,65 +59,70 @@ export function FormLogin() {
           className: "toast",
         });
       }
+
+      onLoginSuccess(result.token);
     } catch (error) {
       console.log("Erro inesperado - > ", error);
     }
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className=" lg:w-[80%] xl:w-[60%] max- w-[90%] flex items-center flex-col gap-8 transition-all duration-300 "
-      >
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem className="w-full flex flex-col gap-0 ">
-              <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold font-bold">
-                Usuario
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Usuario"
-                  {...field}
-                  className="border-[#c4daffb4] "
-                  autoComplete="off"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem className="w-full flex flex-col gap-0 ">
-              <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold font-bold">
-                Senha
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Senha"
-                  {...field}
-                  className="border-[#c4daffb4] "
-                  type="password"
-                  autoComplete="off"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          className="w-full bg-[#1f6df5] font-bold tracking-[0.8px]"
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className=" lg:w-[80%] xl:w-[60%] max- w-[90%] flex items-center flex-col gap-8 transition-all duration-300 "
         >
-          Acessar
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem className="w-full flex flex-col gap-0 ">
+                <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold font-bold">
+                  Usuario
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Usuario"
+                    {...field}
+                    className="border-[#c4daffb4] "
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="w-full flex flex-col gap-0 ">
+                <FormLabel className=" before:content-['*_'] before:text-[red] before:font-bold font-bold">
+                  Senha
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Senha"
+                    {...field}
+                    className="border-[#c4daffb4] "
+                    type="password"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            className="w-full bg-[#1f6df5] font-bold tracking-[0.8px]"
+          >
+            Acessar
+          </Button>
+        </form>
+      </Form>
+      <Links />
+    </>
   );
-}
+};
