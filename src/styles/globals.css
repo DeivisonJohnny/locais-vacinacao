@@ -21,7 +21,7 @@ body {
 }
 
 .bg-gradient {
-  background-image: linear-gradient(to right, #010B19, #010B19 58% , #081937);
+  background-image: linear-gradient(to right, #010b19, #010b19 58%, #081937);
 }
 
 .dropShadow {
@@ -33,7 +33,7 @@ body {
 }
 
 .secBoxShadow {
-  box-shadow: -20px 0px 40px 40px #010B19;
+  box-shadow: -20px 0px 40px 40px #010b19;
   z-index: 1000;
 }
 
@@ -81,10 +81,17 @@ body {
   cursor: pointer;
 }
 
-
-.popup > .mapboxgl-popup-content{
+.popup > .mapboxgl-popup-content {
   color: black;
 }
+
+.toast {
+  background: linear-gradient(145deg, #010b1936 15%, #1f6ef51e, #1ff5a333);
+  backdrop-filter: blur(3px);
+  color: white;
+  border: 1px solid #1ff5a325;
+}
+
 
 @layer base {
   :root {

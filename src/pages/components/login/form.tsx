@@ -12,11 +12,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { toast } from "@/hooks/use-toast"
-import SessionApi from "@/services/Api/SessionApi";
-
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import SessionController from "@/services/api/controller/SessionController";
+import { useState } from "react";
 
 const FormSchema = z.object({
   username: z.string().min(5, {
@@ -28,32 +28,34 @@ const FormSchema = z.object({
 });
 
 export function FormLogin() {
+  const { toast } = useToast();
+
+  const [username] = useState("devjohnny");
+  const [password] = useState("mecontrate");
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: username,
+      password: password
     },
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-
     try {
-      const result = await SessionApi.create(data)
-      console.log("🚀 ~ onSubmit ~ result:", result)
-    } catch (error) {
-      console.log("🚀 ~ onSubmit ~ error:", error)
-      
-    }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await SessionController.create(data);
 
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+      if (result.status != 200) {
+        toast({
+          title: "Usuario e/ou invalida",
+          description: "Use o usuario padrão",
+          className: "toast",
+        });
+      }
+    } catch (error) {
+      console.log("Erro inesperado - > ", error);
+    }
   }
 
   return (
