@@ -5,6 +5,7 @@ import Layout from "./components/layout";
 import { useEffect, useState } from "react";
 import TokenManager from "@/utils/TokenManager";
 import TableListLocations from "./components/table";
+import PostosVacinas, { TypePostosVacinas } from "./api/PostosVacinas";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,6 +21,19 @@ const geistMono = localFont({
 export default function Home() {
   const [token, setToken] = useState<string | null>(TokenManager.get());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [postosVacinas, setPostosVacinas] = useState<TypePostosVacinas[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const {data} = await PostosVacinas.getPostosVacinas();
+      console.log(data);
+      setPostosVacinas(data);
+    };
+  
+    fetchData();
+  }, []);
+  
 
   useEffect(() => {
     if (token) {
@@ -37,7 +51,7 @@ export default function Home() {
         <h1 className=" text-3xl font-bold tracking-tight ">Dev Johnny</h1>
         {isAuthenticated ? (
           <>
-            <TableListLocations />
+            <TableListLocations data={postosVacinas} />
           </>
         ) : (
           <FormLogin onLoginSuccess={(newToken) => setToken(newToken)} />
