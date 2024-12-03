@@ -60,6 +60,7 @@ export const FormLogin = ({ onLoginSuccess }: FormLoginProps) => {
         });
       }
 
+
       onLoginSuccess(result.token);
     } catch (error) {
       console.log("Erro inesperado - > ", error);

@@ -26,14 +26,24 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const {data} = await PostosVacinas.getPostosVacinas();
-      console.log(data);
-      setPostosVacinas(data);
+      try {
+        const { data }:any = await PostosVacinas.getPostosVacinas();
+        console.log(data);
+        setPostosVacinas(data);
+      } catch (error) {
+        console.error(error);
+        setToken(null);
+        TokenManager.remove();
+      }
     };
-  
+
     fetchData();
-  }, []);
-  
+  }, [postosVacinas]);
+
+  const setLocalStorageToken = (token: string) => {
+    TokenManager.set(token);
+    setToken(token);
+  };
 
   useEffect(() => {
     if (token) {
@@ -54,7 +64,9 @@ export default function Home() {
             <TableListLocations data={postosVacinas} />
           </>
         ) : (
-          <FormLogin onLoginSuccess={(newToken) => setToken(newToken)} />
+          <FormLogin
+            onLoginSuccess={(newToken) => setLocalStorageToken(newToken)}
+          />
         )}{" "}
       </Layout>
     </main>

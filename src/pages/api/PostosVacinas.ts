@@ -1,4 +1,5 @@
 import Api from "@/utils/api";
+import TokenManager from "@/utils/TokenManager";
 
 
 
@@ -24,9 +25,16 @@ export type Vacina = {
 export default class PostosVacinas {
 
     static async getPostosVacinas() {
+
+      try {
+
         const data = await Api.get("postos-vacinas");
 
         return data;
+      } catch (error) {
+        console.error(error);
+        TokenManager.remove();
+      }
     }
 
 }

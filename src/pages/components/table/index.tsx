@@ -35,8 +35,6 @@ import { TypePostosVacinas } from "@/pages/api/PostosVacinas";
 
 export default function TableListLocations({data}: {data: TypePostosVacinas[]}) {
 
-console.log("props data ====== ", data)
-
 
   const FormSchema = z.object({
     nome: z.string().min(3, {
@@ -67,7 +65,6 @@ console.log("props data ====== ", data)
     },
   });
 
-  // Função para preencher o formulário ao clicar em "Editar"
   const handleEdit = (posto: TypePostosVacinas) => {
     form.setValue("nome", posto.nome);
     form.setValue("endereco", posto.endereco);
@@ -76,7 +73,7 @@ console.log("props data ====== ", data)
   };
 
   return (
-    <Table>
+    <Table className="table-body-main">
       <TableCaption>Lista dos locais de vacinação</TableCaption>
       <TableHeader>
         <TableRow>
@@ -93,7 +90,7 @@ console.log("props data ====== ", data)
             <TableCell>{posto.endereco}</TableCell>
             <TableCell>
               <Dialog>
-                <DialogTrigger>
+                <DialogTrigger asChild>
                   <Button className=" bg-violet-600">
                     <EyeClosed className="w-4 h-4" />
                   </Button>
@@ -141,7 +138,7 @@ console.log("props data ====== ", data)
             </TableCell>
             <TableCell className="text-right">
               <Dialog>
-                <DialogTrigger>
+                <DialogTrigger asChild>
                   <Button
                     className=" bg-blue-600"
                     onClick={() => handleEdit(posto)} 
@@ -214,7 +211,7 @@ console.log("props data ====== ", data)
                           type="submit"
                           className="w-full mt-3 bg-blue-800 font-bold tracking-[0.8px]"
                         >
-                          Salvar
+                          <p>Salvar</p>
                         </Button>
                       </form>
                     </Form>
