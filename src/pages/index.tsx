@@ -28,7 +28,6 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const { data }:any = await PostosVacinas.getPostosVacinas();
-        console.log(data);
         setPostosVacinas(data);
       } catch (error) {
         console.error(error);
@@ -38,7 +37,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, [postosVacinas]);
+  }, []);
 
   const setLocalStorageToken = (token: string) => {
     TokenManager.set(token);
@@ -67,7 +66,7 @@ export default function Home() {
           <FormLogin
             onLoginSuccess={(newToken) => setLocalStorageToken(newToken)}
           />
-        )}{" "}
+        )}
       </Layout>
     </main>
   );

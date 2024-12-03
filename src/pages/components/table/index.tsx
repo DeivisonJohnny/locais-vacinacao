@@ -99,7 +99,7 @@ export default function TableListLocations({data}: {data: TypePostosVacinas[]}) 
                   <DialogHeader>
                     <DialogTitle>Vacinas do posto {posto.nome}</DialogTitle>
                   </DialogHeader>
-                  <DialogDescription>
+                  <DialogDescription asChild >
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -150,7 +150,7 @@ export default function TableListLocations({data}: {data: TypePostosVacinas[]}) 
                   <DialogHeader>
                     <DialogTitle>Edite dados do posto</DialogTitle>
                   </DialogHeader>
-                  <DialogDescription>
+                  <DialogDescription asChild>
                     <Form {...form}>
                       <form
                         onSubmit={form.handleSubmit(onSubmit)}
