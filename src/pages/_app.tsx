@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Toaster />
       <Component {...pageProps} />
+      <Toaster />
     </>
   );
 }

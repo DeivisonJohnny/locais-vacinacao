@@ -30,46 +30,62 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import styled from "styled-components";
 import { TypePostosVacinas } from "@/pages/api/PostosVacinas";
+import PostoApi, { TypePosto } from "@/pages/api/PostoApi";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import TableVacinas from "./table-vacinas";
+import { FormPosto, FormSchema, FormValues } from "./form-posto";
 
-
-
-export default function TableListLocations({data}: {data: TypePostosVacinas[]}) {
-
-
-  const FormSchema = z.object({
-    nome: z.string().min(3, {
-      message: "Nome deve ter ao menos 3 caracteres",
-    }),
-    endereco: z.string().min(3, {
-      message: "Endereço deve ter ao menos 3 caracteres",
-    }),
-    latitude: z.string().min(5, {
-      message: "Latitude deve ter ao menos 5 caracteres",
-    }),
-    longitude: z.string().min(5, {
-      message: "Longitude deve ter ao menos 5 caracteres",
-    }),
-  });
-
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
-  };
-
-  const form = useForm<z.infer<typeof FormSchema>>({
+export default function TableListLocations({
+  data,
+  updateData,
+}: {
+  data: TypePostosVacinas[];
+  updateData: () => void;
+}) {
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // Controle do diálogo
+  const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      nome: "",
+      id: "",
+      name: "",
       endereco: "",
       latitude: "",
       longitude: "",
     },
   });
 
-  const handleEdit = (posto: TypePostosVacinas) => {
-    form.setValue("nome", posto.nome);
-    form.setValue("endereco", posto.endereco);
-    form.setValue("latitude", posto.latitude);
-    form.setValue("longitude", posto.longitude);
+  const handleEdit = (posto: TypePosto) => {
+    const fields: (keyof FormValues)[] = ['id', 'name', 'endereco', 'latitude', 'longitude'];
+    fields.forEach(field => form.setValue(field, posto[field].toString()));
+  };
+
+  const onSubmit = async (formData: FormValues) => {
+    try {
+      const { data }: any = await PostoApi.putPosto(formData.id, formData as TypePosto);
+
+      if (data.status !== 200) {
+        toast({
+          title: "Erro ao atualizar posto",
+          description: data.message,
+        });
+        return;
+      }
+
+      toast({
+        title: "Posto atualizado com sucesso",
+        description: "Os dados do posto foram atualizados com sucesso.",
+      });
+
+      updateData();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Erro inesperado",
+        description: "Ocorreu um erro ao atualizar o posto.",
+      });
+    }
   };
 
   return (
@@ -85,53 +101,22 @@ export default function TableListLocations({data}: {data: TypePostosVacinas[]}) 
       </TableHeader>
       <TableBody>
         {data.map((posto) => (
-          <TableRow key={posto.id}>
-            <TableCell className="font-medium">{posto.nome}</TableCell>
+          <TableRow key={`posto-${posto.id}`}>
+            <TableCell className="font-medium">{posto.name}</TableCell>
             <TableCell>{posto.endereco}</TableCell>
             <TableCell>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className=" bg-violet-600">
+                  <Button className="bg-violet-600">
                     <EyeClosed className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
                 <DialogContent style={{ zIndex: 1000 }}>
                   <DialogHeader>
-                    <DialogTitle>Vacinas do posto {posto.nome}</DialogTitle>
+                    <DialogTitle>Vacinas do posto {posto.name}</DialogTitle>
                   </DialogHeader>
-                  <DialogDescription asChild >
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="text-center text-[white] font-bold ">Nome</TableHead>
-                          <TableHead className="text-center text-[white] font-bold ">
-                            Descrição
-                          </TableHead>
-                          <TableHead className="text-center text-[white] font-bold ">Tipo</TableHead>
-                          <TableHead className="text-center text-[white] font-bold ">
-                            Quantidade
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {Object.values(posto.vacinas).map((vacina) => (
-                          <TableRow key={vacina.id}>
-                            <TableCell className="text-center text-[white] ">
-                              {vacina.nome}
-                            </TableCell>
-                            <TableCell className="text-center text-[white] ">
-                              {vacina.descricao}
-                            </TableCell>
-                            <TableCell className="text-center text-[white] ">
-                              {vacina.tipo}
-                            </TableCell>
-                            <TableCell className="text-center text-[white] ">
-                              {vacina.quantidade}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                  <DialogDescription asChild>
+                    <TableVacinas vacinas={posto.vacinas} />
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
@@ -140,8 +125,8 @@ export default function TableListLocations({data}: {data: TypePostosVacinas[]}) 
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
-                    className=" bg-blue-600"
-                    onClick={() => handleEdit(posto)} 
+                    className="bg-blue-600"
+                    onClick={() => handleEdit(posto)}
                   >
                     <Pencil className="w-4 h-4" />
                   </Button>
@@ -151,70 +136,7 @@ export default function TableListLocations({data}: {data: TypePostosVacinas[]}) 
                     <DialogTitle>Edite dados do posto</DialogTitle>
                   </DialogHeader>
                   <DialogDescription asChild>
-                    <Form {...form}>
-                      <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="flex flex-col gap-2"
-                      >
-                        <FormField
-                          control={form.control}
-                          name="nome"
-                          render={({ field }) => (
-                            <FormItem className="text-[white] ">
-                              <FormLabel>Nome</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="endereco"
-                          render={({ field }) => (
-                            <FormItem className="text-[white] ">
-                              <FormLabel>Endereço</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-
-                        <ContainerInputCoords>
-                          <FormField
-                            control={form.control}
-                            name="latitude"
-                            render={({ field }) => (
-                              <FormItem className="w-full text-[white] ">
-                                <FormLabel>Longitude</FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="longitude"
-                            render={({ field }) => (
-                              <FormItem className="w-full text-[white] ">
-                                <FormLabel>Longitude</FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-                        </ContainerInputCoords>
-                        <Button
-                          type="submit"
-                          className="w-full mt-3 bg-blue-800 font-bold tracking-[0.8px]"
-                        >
-                          <p>Salvar</p>
-                        </Button>
-                      </form>
-                    </Form>
+                    <FormPosto form={form} onSubmit={onSubmit} />
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
@@ -225,10 +147,3 @@ export default function TableListLocations({data}: {data: TypePostosVacinas[]}) 
     </Table>
   );
 }
-
-const ContainerInputCoords = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-`;

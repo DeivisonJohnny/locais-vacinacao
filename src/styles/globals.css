@@ -82,14 +82,11 @@ body {
 }
 
 .fixed {
-  background-color: #010b19ad;
   color: white;
 }
 
 .relative {
-  &::-webkit-scrollbar {
-    width: 8px; /* Largura da barra de rolagem */
-  }
+  scrollbar-width: 0px;
 }
 .table-body-main {
   color: white;
@@ -103,12 +100,7 @@ body {
   top: 5px;
   font-size: 16px;
 }
-.toast {
-  background: linear-gradient(145deg, #010b1936 15%, #1f6ef51e, #1ff5a333);
-  backdrop-filter: blur(3px);
-  color: white;
-  border: 1px solid #1ff5a325;
-}
+
 
 @layer base {
   :root {

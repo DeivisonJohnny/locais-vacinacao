@@ -8,12 +8,12 @@ export type Vacina = {
     descricao: string;
     id: number;
     tipo: string;
-    nome: string;
+    name: string;
   };
   
   export type TypePostosVacinas = {
-    id: number;
-    nome: string;
+    id: string;
+    name: string;
     endereco: string;
     latitude: string;
     longitude: string;
