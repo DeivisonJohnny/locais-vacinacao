@@ -29,7 +29,7 @@ body {
 }
 
 .dropShadowHover:hover {
-  filter: drop-shadow(0px 13px 1.5px #ffffff4e) !important ;
+  filter: drop-shadow(0px 13px 1.5px #ffffff4e) !important;
 }
 
 .secBoxShadow {
@@ -47,7 +47,7 @@ body {
 
 #map-container {
   height: 100%;
-  width: 70% !important ;
+  width: 70% !important;
 }
 
 .mapboxgl-canvas {
@@ -88,6 +88,7 @@ body {
 .relative {
   scrollbar-width: 0px;
 }
+
 .table-body-main {
   color: white;
 }
@@ -95,12 +96,16 @@ body {
 .popup > .mapboxgl-popup-content {
   color: black;
 }
+
 .popup > .mapboxgl-popup-content .mapboxgl-popup-close-button {
   right: 10px;
   top: 5px;
   font-size: 16px;
 }
 
+.hover\:bg-muted\/50:hover {
+  background-color: #004492 !important;
+}
 
 @layer base {
   :root {

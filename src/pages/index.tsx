@@ -32,18 +32,18 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data }: any = await PostosVacinas.getPostosVacinas();
-        setPostosVacinas(data);
-      } catch (error) {
-        console.error(error);
-        setToken(null);
-        TokenManager.remove();
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const { data }: any = await PostosVacinas.getPostosVacinas();
+      setPostosVacinas(data);
+    } catch (error) {
+      console.error(error);
+      setToken(null);
+      TokenManager.remove();
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 

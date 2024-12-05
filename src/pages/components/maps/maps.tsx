@@ -7,6 +7,7 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const rotationRef = useRef<number | null>(null);
 
   const zoomLevels = [
     { zoom: 1, count: 5 },
@@ -76,6 +77,39 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
         });
 
         updateMarkerVisibility(mapRef.current?.getZoom() || 0);
+
+        const zoomThreshold = 2;
+
+        const rotateGlobeLaterally = () => {
+          if (!mapRef.current) return;
+          const currentCenter = mapRef.current.getCenter();
+          mapRef.current.setCenter([currentCenter.lng + 0.03, currentCenter.lat], {
+            duration: 0,
+          });
+          rotationRef.current = requestAnimationFrame(rotateGlobeLaterally);
+        };
+
+        const checkZoomAndRotate = () => {
+          if (!mapRef.current) return;
+          const currentZoom = mapRef.current.getZoom();
+          if (currentZoom < zoomThreshold && !rotationRef.current) {
+            rotateGlobeLaterally();
+          } else if (currentZoom >= zoomThreshold && rotationRef.current) {
+            cancelAnimationFrame(rotationRef.current);
+            rotationRef.current = null;
+          }
+        };
+
+        mapRef.current?.on('zoomend', checkZoomAndRotate);
+
+        checkZoomAndRotate();
+
+        mapRef.current?.on('mousedown', () => {
+          if (rotationRef.current) {
+            cancelAnimationFrame(rotationRef.current);
+            rotationRef.current = null;
+          }
+        });
       });
 
       const updateMarkerVisibility = (currentZoom: number) => {
