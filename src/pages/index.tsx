@@ -44,6 +44,10 @@ export default function Home() {
   };
 
   useEffect(() => {
+    
+  })
+
+  useEffect(() => {
     fetchData();
   }, []);
 

@@ -16,6 +16,18 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
     { zoom: 8, count: 50 },
   ];
 
+  const updateMarkerVisibility = (currentZoom: number) => {
+    const maxVisibleMarkers = zoomLevels.reduce(
+      (count, level) => (currentZoom >= level.zoom ? level.count : count),
+      0
+    );
+
+    markersRef.current.forEach((marker, index) => {
+      marker.getElement().style.display =
+        index < maxVisibleMarkers ? "block" : "none";
+    });
+  };
+
   useEffect(() => {
     if (mapContainerRef.current) {
       mapboxgl.accessToken = process.env.NEXT_PUBLIC_KEY_MAPS as string;
@@ -78,7 +90,7 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
 
         updateMarkerVisibility(mapRef.current?.getZoom() || 0);
 
-        const zoomThreshold = 2;
+        const zoomThreshold = 3;
 
         const rotateGlobeLaterally = () => {
           if (!mapRef.current) return;
@@ -112,18 +124,6 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
         });
       });
 
-      const updateMarkerVisibility = (currentZoom: number) => {
-        const maxVisibleMarkers = zoomLevels.reduce(
-          (count, level) => (currentZoom >= level.zoom ? level.count : count),
-          0
-        );
-
-        markersRef.current.forEach((marker, index) => {
-          marker.getElement().style.display =
-            index < maxVisibleMarkers ? "block" : "none";
-        });
-      };
-
       mapRef.current.on("zoom", () => {
         const currentZoom = mapRef.current?.getZoom() || 0;
         updateMarkerVisibility(currentZoom);
@@ -140,6 +140,56 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
         mapRef.current.remove();
       }
     };
+  }, [data]);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Limpar markers existentes
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
+
+    // Criar novos markers
+    markersRef.current = data.map((posto) => {
+      const marker = new mapboxgl.Marker().setLngLat({
+        lat: parseFloat(posto.latitude),
+        lng: parseFloat(posto.longitude),
+      });
+
+      const popup = new mapboxgl.Popup({ offset: 25 })
+        .setDOMContent(
+          (() => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+              <div>
+                <h3 class="font-bold text-[12px] ">${posto.name}</h3>
+                <p class="text-[10px] text-gray-700">${posto.endereco}</p>
+                <div class="mt-2">
+                  <h4 class="font-semibold text-[10px]">Vacinas disponíveis:</h4>
+                  ${Object.values(posto.vacinas)
+                    .map(
+                      (vacina) => `
+                      <div class="ml-2">
+                        <p class="text-[10px]">${vacina.name}: ${vacina.quantidade} doses</p>
+                      </div>
+                    `
+                    )
+                    .join('')}
+                </div>
+              </div>
+            `;
+            return div;
+          })()
+        )
+        .addClassName("popup");
+
+      marker.setPopup(popup);
+      marker.addTo(mapRef.current!);
+      marker.getElement().style.display = "none";
+      return marker;
+    });
+
+    updateMarkerVisibility(mapRef.current.getZoom());
   }, [data]);
 
   return (
