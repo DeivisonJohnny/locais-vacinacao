@@ -28,6 +28,7 @@ import { TypePostosVacinas } from "@/pages/api/PostosVacinas";
 import PostoApi, { TypePosto } from "@/pages/api/PostoApi";
 import { FormPosto, FormSchema, FormValues } from "./form-posto";
 import TableVacinas from "./table-vacinas";
+import { useMapContext } from "@/contexts/MapContext";
 
 interface TableListLocationsProps {
   data: TypePostosVacinas[];
@@ -40,20 +41,28 @@ const TableRowPosto = ({
 }: {
   posto: TypePostosVacinas;
   onEdit: (posto: TypePosto) => void;
-}) => (
-  <TableRow key={`posto-${posto.id}`}>
-    <TableCell className="font-medium">{posto.name}</TableCell>
-    <TableCell>{posto.endereco}</TableCell>
-    <TableCell>
-      <VacinasDialog posto={posto} />
-    </TableCell>
-    <TableCell className="text-right">
-      <Button className="bg-blue-600" onClick={() => onEdit(posto)}>
-        <Pencil className="w-4 h-4" />
-      </Button>
-    </TableCell>
-  </TableRow>
-);
+}) => {
+  const { setSelectedPosto } = useMapContext();
+
+  return (
+    <TableRow 
+      key={`posto-${posto.id}`}
+      className="cursor-pointer hover:bg-gray-100"
+      onClick={() => setSelectedPosto(posto)}
+    >
+      <TableCell className="font-medium">{posto.name}</TableCell>
+      <TableCell>{posto.endereco}</TableCell>
+      <TableCell>
+        <VacinasDialog posto={posto} />
+      </TableCell>
+      <TableCell className="text-right">
+        <Button className="bg-blue-600" onClick={() => onEdit(posto)}>
+          <Pencil className="w-4 h-4" />
+        </Button>
+      </TableCell>
+    </TableRow>
+  );
+};
 
 const VacinasDialog = ({ posto }: { posto: TypePostosVacinas }) => (
   <Dialog>

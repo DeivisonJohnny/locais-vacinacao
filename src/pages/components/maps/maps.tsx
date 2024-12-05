@@ -2,12 +2,15 @@ import React, { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { TypePostosVacinas } from "@/pages/api/PostosVacinas";
+import { useMapContext } from '@/contexts/MapContext';
 
 const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
+  const { selectedPosto } = useMapContext();
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const rotationRef = useRef<number | null>(null);
+  const activePopupRef = useRef<mapboxgl.Marker | null>(null);
 
   const zoomLevels = [
     { zoom: 1, count: 5 },
@@ -143,20 +146,42 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
   }, [data]);
 
   useEffect(() => {
+    if (!mapRef.current || !selectedPosto) return;
+
+    if (activePopupRef.current) {
+      activePopupRef.current.getPopup()?.remove();
+    }
+
+    const marker = markersRef.current.find(
+      (m) => m.getLngLat().lat === parseFloat(selectedPosto.latitude) &&
+             m.getLngLat().lng === parseFloat(selectedPosto.longitude)
+    );
+
+    if (marker) {
+      mapRef.current.flyTo({
+        center: [parseFloat(selectedPosto.longitude), parseFloat(selectedPosto.latitude)],
+        zoom: 15,
+        duration: 1500
+      });
+
+      marker.togglePopup();
+      activePopupRef.current = marker;
+    }
+  }, [selectedPosto]);
+
+  useEffect(() => {
     if (!mapRef.current) return;
 
-    // Limpar markers existentes
     markersRef.current.forEach(marker => marker.remove());
     markersRef.current = [];
 
-    // Criar novos markers
     markersRef.current = data.map((posto) => {
       const marker = new mapboxgl.Marker().setLngLat({
         lat: parseFloat(posto.latitude),
         lng: parseFloat(posto.longitude),
       });
 
-      const popup = new mapboxgl.Popup({ offset: 25 })
+      const popup = new mapboxgl.Popup({ offset: 25, closeOnClick: false })
         .setDOMContent(
           (() => {
             const div = document.createElement('div');
@@ -184,9 +209,27 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
         .addClassName("popup");
 
       marker.setPopup(popup);
+      
+      marker.getElement().addEventListener('click', () => {
+        if (activePopupRef.current && activePopupRef.current !== marker) {
+          activePopupRef.current.getPopup()?.remove();
+        }
+        activePopupRef.current = marker;
+      });
+
       marker.addTo(mapRef.current!);
       marker.getElement().style.display = "none";
       return marker;
+    });
+
+    mapRef.current.on('click', (e) => {
+      const target = e.originalEvent.target as HTMLElement;
+      if (!target.closest('.mapboxgl-marker')) {
+        if (activePopupRef.current) {
+          activePopupRef.current.getPopup()?.remove();
+          activePopupRef.current = null;
+        }
+      }
     });
 
     updateMarkerVisibility(mapRef.current.getZoom());
