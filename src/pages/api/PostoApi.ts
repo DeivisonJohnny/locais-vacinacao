@@ -11,7 +11,7 @@ export type TypePosto = {
 export default class PostoApi {
   static async putPosto(id: string, data: TypePosto) {
     try {
-      const response = await Api.put(`postos/${id}`, data);
+      const response = await Api.put(`posto/${id}`, data);
       return response;
     } catch (error) {
       console.error(error);

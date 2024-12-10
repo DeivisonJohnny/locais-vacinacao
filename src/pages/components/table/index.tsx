@@ -45,9 +45,9 @@ const TableRowPosto = ({
   const { setSelectedPosto } = useMapContext();
 
   return (
-    <TableRow 
+    <TableRow
       key={`posto-${posto.id}`}
-      className="cursor-pointer hover:bg-gray-100"
+      className="cursor-pointer hover:bg-[#4b00cb]"
       onClick={() => setSelectedPosto(posto)}
     >
       <TableCell className="font-medium">{posto.name}</TableCell>
@@ -130,7 +130,6 @@ export default function TableListLocations({
           title: "Erro ao atualizar posto",
           description: data.message,
         });
-        console.log(data);
         return;
       }
 
@@ -152,11 +151,11 @@ export default function TableListLocations({
   };
 
   return (
-    <>
-      <Table className="table-body-main">
+    <div className=" overflow-x-hidden scrollCustom">
+      <Table className="table-body-main overflow-x-hidden">
         <TableCaption>Lista dos locais de vacinação</TableCaption>
         <TableHeader>
-          <TableRow>
+          <TableRow className=" hover:bg-transparent " >
             <TableHead>Nome</TableHead>
             <TableHead>Endereço</TableHead>
             <TableHead>Vacinas</TableHead>
@@ -183,6 +182,6 @@ export default function TableListLocations({
           </DialogDescription>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

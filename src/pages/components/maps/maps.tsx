@@ -93,7 +93,7 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
 
         updateMarkerVisibility(mapRef.current?.getZoom() || 0);
 
-        const zoomThreshold = 3;
+        const zoomThreshold = 2.3;
 
         const rotateGlobeLaterally = () => {
           if (!mapRef.current) return;
@@ -237,9 +237,8 @@ const Maps = ({ data }: { data: TypePostosVacinas[] }) => {
 
   return (
     <div
-      id="map-container"
       ref={mapContainerRef}
-      style={{ width: "100%", height: "100vh" }}
+      className="map-container"
     />
   );
 };

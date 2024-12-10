@@ -6,6 +6,14 @@ import TokenManager from "@/utils/TokenManager";
 import TableListLocations from "./components/table";
 import PostosVacinas, { TypePostosVacinas } from "./api/PostosVacinas";
 import Maps from "./components/maps/maps";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { MapIcon } from "lucide-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,6 +30,7 @@ export default function Home() {
   const [token, setToken] = useState<string | null>(TokenManager.get());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [postosVacinas, setPostosVacinas] = useState<TypePostosVacinas[]>([]);
+  const [widthWidows, setWidthWidows] = useState<number | null>();
 
   const updateData = async () => {
     try {
@@ -44,11 +53,17 @@ export default function Home() {
   };
 
   useEffect(() => {
-    
-  })
-
-  useEffect(() => {
     fetchData();
+
+    const handleResize = () => {
+      setWidthWidows(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const setLocalStorageToken = (token: string) => {
@@ -64,12 +79,33 @@ export default function Home() {
     }
   }, [token]);
 
+  console.log(widthWidows);
+
   return (
     <main
-      className={` ${geistSans.variable} ${geistMono.variable} bg-gradient w-[100vw] h-[100vh] flex items-center `}
+      className={` ${geistSans.variable} ${geistMono.variable} bg-gradient w-[100vw] h-[100vh] flex items-center`}
     >
-      <Maps data={postosVacinas} />
-      <section className="px-[10px] w-[50%] h-full flex items-center flex-col justify-center gap-[40px] secBoxShadow ">
+      {widthWidows && widthWidows > 800 ? (
+        <Maps data={postosVacinas} />
+      ) : (
+        <Dialog  >
+          <DialogTrigger className="absolute top-[20px] right-[20px] z-[52] bg-[#4b00cb] " asChild>
+            <Button>
+              <MapIcon />
+              <span>Mapa</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="w-[90%] h-[90vh] max-w-none m-0 p-0 border-none z-[54] rounded-[10px] overflow-hidden ">
+            <Maps data={postosVacinas} />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      <section
+        className={`px-[10px] ${
+          widthWidows && widthWidows > 800 ? "w-[50%]" : "w-[100%]"
+        } h-full flex items-center flex-col justify-center gap-[40px] secBoxShadow`}
+      >
         <h1 className=" text-3xl font-bold tracking-tight ">Dev Johnny</h1>
         {isAuthenticated ? (
           <>
